@@ -1,11 +1,17 @@
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace Clients.Api.Diagnostics;
+namespace OpenTel.Api.Diagnostics;
 
 public static class ApplicationDiagnostics
 {
-    private const string ServiceName = "Clients.Api";
+    private const string ServiceName = "WeatherForecast.Api";
+    public const string ActivitySourceName = "WeatherForecast.Api";
+    
     public static readonly Meter Meter = new(ServiceName);
 
-    public static readonly Counter<long> ClientsCreatedCounter = Meter.CreateCounter<long>("clients.created");
+    public static readonly Counter<long> ForecastRequestCounter = Meter.CreateCounter<long>("forecast.requested");
+    
+    
+    public static readonly ActivitySource ActivitySource = new(ActivitySourceName);
 }

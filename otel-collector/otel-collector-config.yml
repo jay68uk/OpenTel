@@ -13,13 +13,13 @@ processors:
     check_interval: 1s
     limit_percentage: 50
     spike_limit_percentage: 30
-  
+    
   batch:
     
   attributes:
     actions:
-      - key: region
-        value: west
+      - key: weatherRegion
+        value: uk
         action: insert
 
 exporters:

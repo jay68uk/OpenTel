@@ -1,94 +1,64 @@
 using System.Reflection;
-using Infrastructure.RabbitMQ;
 using Npgsql;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace Clients.Api.Diagnostics;
+namespace OpenTel.Api.Diagnostics;
 
 public static class OpenTelemetryConfigurationExtensions
 {
     public static WebApplicationBuilder AddOpenTelemetry(this WebApplicationBuilder builder)
     {
-        const string serviceName = "Clients.Api";
-
-        var otlpEndpoint = new Uri(builder.Configuration.GetValue<string>("OTLP_Endpoint")!);
-
-        // builder.Logging
-        //     .Configure(options =>
-        //     {
-        //         options.ActivityTrackingOptions = ActivityTrackingOptions.SpanId
-        //                                           | ActivityTrackingOptions.TraceId
-        //                                           | ActivityTrackingOptions.ParentId
-        //                                           | ActivityTrackingOptions.Baggage
-        //                                           | ActivityTrackingOptions.Tags;
-        //     })
-        //     .AddOpenTelemetry(
-        //     options =>
-        //     {
-        //         options.IncludeScopes = true;
-        //         options.IncludeFormattedMessage = true;
-        //         options.ParseStateValues = true;
-        //
-        //         options
-        //             .SetResourceBuilder(ResourceBuilder.CreateDefault()
-        //                 .AddService(serviceName));
-        //
-        //         options.AddConsoleExporter();
-        //     }
-        // );
-
-        // builder.Services
-        //     .ConfigureOpenTelemetryTracerProvider(provider =>
-        //         provider.SetSampler(new RateSampler(0.25)));
-        //
-        // builder.Services
-        //     .ConfigureOpenTelemetryTracerProvider(provider =>
-        //         provider.SetSampler<OpenTelemetry.Trace.AlwaysOffSampler>());
+        const string serviceName = "WeatherForecast.Api";
         
+        var otlpEndpoint = new Uri(builder.Configuration.GetValue<string>("OTLP_Endpoint")!);
+        Console.WriteLine($"OTLP: {otlpEndpoint.AbsoluteUri}");
+
         builder.Services.AddOpenTelemetry()
             .ConfigureResource(resource =>
             {
                 resource
-                    .AddService(serviceName)
+                    .AddService(serviceName,
+                        "WeatherForecast.OpenTelemetry",
+                        Assembly.GetExecutingAssembly().GetName().Version!.ToString()) 
+                    // service.instance.id is auto-generated but can be set to a cloud service ID
                     .AddAttributes(new[]
                     {
-                        new KeyValuePair<string, object>("service.version",
-                            Assembly.GetExecutingAssembly().GetName().Version!.ToString())
+                        new KeyValuePair<string, object>("service.otherAttribute",
+                            "Ensure any value is cast to a primitive") 
                     });
             })
             .WithTracing(tracing =>
-                tracing
-                    .AddAspNetCoreInstrumentation()
-                    .AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddNpgsql()
-                    .AddSource(RabbitMqDiagnostics.ActivitySourceName)
-                    .AddRedisInstrumentation()
-                    // .AddConsoleExporter()
-                    .AddOtlpExporter(options =>
-                        options.Endpoint = otlpEndpoint)
+                    tracing
+                        .AddAspNetCoreInstrumentation() // instrumentation library for http requests, use system.diagnostics
+                        .AddHttpClientInstrumentation()
+                        .AddSource(ApplicationDiagnostics.ActivitySourceName)
+                        //.AddNpgsql()
+                        // .AddSource(RabbitMqDiagnostics.ActivitySourceName)
+                        .AddConsoleExporter() // use this when starting out 
+                        //.AddOtlpExporter(options => options.Endpoint = new Uri("http://jaeger:4317"))
+                        .AddOtlpExporter(options =>
+                            options.Endpoint = new Uri("http://otel-collector:4317"))
             )
             .WithMetrics(metrics =>
                 metrics
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    // Metrics provides by ASP.NET
                     .AddMeter("Microsoft.AspNetCore.Hosting")
                     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
                     .AddMeter(ApplicationDiagnostics.Meter.Name)
-                    // .AddConsoleExporter()
+                    .AddConsoleExporter()
                     .AddOtlpExporter(options =>
-                        options.Endpoint = otlpEndpoint)
+                        options.Endpoint = new Uri("http://otel-collector:4317"))
             )
             .WithLogging(
                 logging=>
                     logging
-                        // .AddConsoleExporter()
+                        .AddConsoleExporter()
                         .AddOtlpExporter(options => 
-                            options.Endpoint = otlpEndpoint)
+                            options.Endpoint = new Uri("http://otel-collector:4317"))
             );
 
         return builder;
