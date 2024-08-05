@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTel.Api", "OpenTel.Api\OpenTel.Api.csproj", "{08DC3DF3-D2BB-4802-BDC8-530E9955122A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{90179391-2D7E-437E-8DD6-44C438B56663}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		otel-collector-config.yml = otel-collector-config.yml
+		prometheus.yml = prometheus.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08DC3DF3-D2BB-4802-BDC8-530E9955122A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08DC3DF3-D2BB-4802-BDC8-530E9955122A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08DC3DF3-D2BB-4802-BDC8-530E9955122A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08DC3DF3-D2BB-4802-BDC8-530E9955122A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

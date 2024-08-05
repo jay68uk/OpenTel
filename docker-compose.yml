@@ -1,0 +1,6 @@
+﻿services:
+  opentel.api:
+    image: opentel.api
+    build:
+      context: .
+      dockerfile: OpenTel.Api/Dockerfile
