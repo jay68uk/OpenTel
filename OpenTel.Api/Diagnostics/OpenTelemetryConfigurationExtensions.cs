@@ -11,7 +11,7 @@ public static class OpenTelemetryConfigurationExtensions
 {
     public static WebApplicationBuilder AddOpenTelemetry(this WebApplicationBuilder builder)
     {
-        const string serviceName = "WeatherForecast.Api";
+        const string serviceName = "BookResponse.Api";
         
         var otlpEndpoint = new Uri(builder.Configuration.GetValue<string>("OTLP_Endpoint")!);
         Console.WriteLine($"OTLP: {otlpEndpoint.AbsoluteUri}");
@@ -21,7 +21,7 @@ public static class OpenTelemetryConfigurationExtensions
             {
                 resource
                     .AddService(serviceName,
-                        "WeatherForecast.OpenTelemetry",
+                        "BookResponse.OpenTelemetry",
                         Assembly.GetExecutingAssembly().GetName().Version!.ToString()) 
                     // service.instance.id is auto-generated but can be set to a cloud service ID
                     .AddAttributes(new[]
@@ -35,12 +35,12 @@ public static class OpenTelemetryConfigurationExtensions
                         .AddAspNetCoreInstrumentation() // instrumentation library for http requests, use system.diagnostics
                         .AddHttpClientInstrumentation()
                         .AddSource(ApplicationDiagnostics.ActivitySourceName)
-                        //.AddNpgsql()
+                        .AddNpgsql()
                         // .AddSource(RabbitMqDiagnostics.ActivitySourceName)
                         .AddConsoleExporter() // use this when starting out 
                         //.AddOtlpExporter(options => options.Endpoint = new Uri("http://jaeger:4317"))
                         .AddOtlpExporter(options =>
-                            options.Endpoint = new Uri("http://otel-collector:4317"))
+                            options.Endpoint = otlpEndpoint)
             )
             .WithMetrics(metrics =>
                 metrics
@@ -51,14 +51,14 @@ public static class OpenTelemetryConfigurationExtensions
                     .AddMeter(ApplicationDiagnostics.Meter.Name)
                     .AddConsoleExporter()
                     .AddOtlpExporter(options =>
-                        options.Endpoint = new Uri("http://otel-collector:4317"))
+                        options.Endpoint = otlpEndpoint)
             )
             .WithLogging(
                 logging=>
                     logging
                         .AddConsoleExporter()
                         .AddOtlpExporter(options => 
-                            options.Endpoint = new Uri("http://otel-collector:4317"))
+                            options.Endpoint = otlpEndpoint)
             );
 
         return builder;

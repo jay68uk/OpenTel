@@ -1,6 +1,12 @@
-@OpenTel.Api_HostAddress = http://localhost:5240
+@OpenTel.Api_HostAddress = http://localhost:8080
 
-GET {{OpenTel.Api_HostAddress}}/weatherforecast/
+GET {{OpenTel.Api_HostAddress}}/book/D7FFFD73-2B93-45C3-BF6B-4E5235993FD2
+Accept: application/json
+
+###
+
+# will return not found
+GET {{OpenTel.Api_HostAddress}}/book/D7FFFD73-2B93-45C3-BF6B-4E5235993FD9
 Accept: application/json
 
 ###

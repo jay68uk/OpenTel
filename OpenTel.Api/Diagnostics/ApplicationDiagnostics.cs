@@ -5,12 +5,12 @@ namespace OpenTel.Api.Diagnostics;
 
 public static class ApplicationDiagnostics
 {
-    private const string ServiceName = "WeatherForecast.Api";
-    public const string ActivitySourceName = "WeatherForecast.Api";
+    private const string ServiceName = "OpenTel.Api";
+    public const string ActivitySourceName = "Books.Features";
     
     public static readonly Meter Meter = new(ServiceName);
 
-    public static readonly Counter<long> ForecastRequestCounter = Meter.CreateCounter<long>("forecast.requested");
+    public static readonly Counter<long> BookRequestCounter = Meter.CreateCounter<long>("book.requested");
     
     
     public static readonly ActivitySource ActivitySource = new(ActivitySourceName);

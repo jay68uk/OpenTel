@@ -2,8 +2,8 @@
 
 public static class LogEventId
 {
-  public static EventId ForecastEvent()
+  public static EventId BookEvent()
   {
-    return new EventId(765, "Forecast.Api");
+    return new EventId(765);
   }
 }
