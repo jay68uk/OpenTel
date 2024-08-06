@@ -10,15 +10,17 @@ namespace OpenTel.Api.Features;
 public record BookResponse(Guid Id, string Title, string Author);
 
 
-public class GetBookById : EndpointWithoutRequest<BookResponse>
+internal class GetBookById : EndpointWithoutRequest<BookResponse>
 {
   private readonly ILogger<GetBookById> _logger;
   private readonly BooksDbContext _dbContext;
+  private readonly EventsPublisher _eventsPublisher;
 
-  public GetBookById(ILogger<GetBookById> logger, BooksDbContext dbContext)
+  public GetBookById(ILogger<GetBookById> logger, BooksDbContext dbContext, EventsPublisher eventsPublisher)
   {
     _logger = logger;
     _dbContext = dbContext;
+    _eventsPublisher = eventsPublisher;
   }
 
   public override void Configure()
@@ -44,8 +46,6 @@ public class GetBookById : EndpointWithoutRequest<BookResponse>
       
       ApplicationDiagnostics.BookRequestCounter.Add(1,
         new[] { new KeyValuePair<string, object?>("books.requested", bookId.ToString()) });
-
-      //Baggage.SetBaggage("book.id", bookId.ToString());
       
       var result = _dbContext.Books.SingleOrDefault(b => b.Id == bookId);
 
@@ -74,6 +74,9 @@ public class GetBookById : EndpointWithoutRequest<BookResponse>
       .StartActivity("book.retrieved", ActivityKind.Server);
       activity?.SetTag("book.id", bookId.ToString());
 
+      Baggage.SetBaggage("book.id", bookId.ToString());
+      _eventsPublisher.Publish(result);
+      
       await SendOkAsync(new BookResponse(result.Id, result.Title, result.Author));
     }
     catch (Exception e)

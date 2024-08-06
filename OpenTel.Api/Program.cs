@@ -3,6 +3,8 @@ using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using OpenTel.Api;
 using OpenTel.Api.Diagnostics;
+using OpenTel.Api.Extensions;
+using OpenTel.Book.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<BooksDbContext>(options =>
   options.UseNpgsql(builder.Configuration.GetConnectionString("BooksDb")));
 
 builder.AddOpenTelemetry();
+
+builder.AddRabbitMq();
 
 var app = builder.Build();
 
@@ -42,6 +46,13 @@ static void EnsureDbCreated(WebApplication app)
   
   context.Database.EnsureCreated();
 
-  context.Books.Add(new Book(){ Author = "J.R.R Tolkien", Id = Guid.Parse("D7FFFD73-2B93-45C3-BF6B-4E5235993FD2"), Title = "The Hobbit" });
-  context.SaveChanges();
+  try
+  {
+    context.Books.Add(new Book(){ Author = "J.R.R Tolkien", Id = Guid.Parse("D7FFFD73-2B93-45C3-BF6B-4E5235993FD2"), Title = "The Hobbit" });
+    context.SaveChanges();
+  }
+  catch (Exception e)
+  {
+    Console.WriteLine("Test book already added");
+  }
 }

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Npgsql;
+using OpenTel.RabbitMQ;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -36,7 +37,7 @@ public static class OpenTelemetryConfigurationExtensions
                         .AddHttpClientInstrumentation()
                         .AddSource(ApplicationDiagnostics.ActivitySourceName)
                         .AddNpgsql()
-                        // .AddSource(RabbitMqDiagnostics.ActivitySourceName)
+                        .AddSource(RabbitMqDiagnostics.ActivitySourceName)
                         .AddConsoleExporter() // use this when starting out 
                         //.AddOtlpExporter(options => options.Endpoint = new Uri("http://jaeger:4317"))
                         .AddOtlpExporter(options =>
