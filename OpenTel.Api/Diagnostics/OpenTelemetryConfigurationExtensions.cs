@@ -27,7 +27,7 @@ public static class OpenTelemetryConfigurationExtensions
                     .AddAttributes(new[]
                     {
                         new KeyValuePair<string, object>("service.otherAttribute",
-                            "Ensure any value is cast to a primitive") 
+                            "Set in the builder.Services.AddOpenTelemetry(), Ensure any value used here is cast to a primitive") 
                     });
             })
             .WithTracing(tracing =>

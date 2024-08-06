@@ -10,3 +10,9 @@ GET {{OpenTel.Api_HostAddress}}/book/D7FFFD73-2B93-45C3-BF6B-4E5235993FD9
 Accept: application/json
 
 ###
+
+# will throw an exception
+GET {{OpenTel.Api_HostAddress}}/book/D7FFFD73-2B93-45C3-BF6B-4E5235993FD0
+Accept: application/json
+
+###
