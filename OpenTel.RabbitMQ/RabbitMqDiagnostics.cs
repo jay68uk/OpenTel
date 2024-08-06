@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using OpenTelemetry.Context.Propagation;
 
-namespace Infrastructure.RabbitMQ;
+namespace OpenTel.RabbitMQ;
 
 public static class RabbitMqDiagnostics
 {

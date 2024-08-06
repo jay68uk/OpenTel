@@ -1,3 +1,3 @@
 namespace OpenTel.Book.Contracts;
 
-public record CreateClientRequested(Client Client, DateTimeOffset RequestedOn);
+public record GetBookRequested(Book Book, DateTimeOffset RequestedOn);

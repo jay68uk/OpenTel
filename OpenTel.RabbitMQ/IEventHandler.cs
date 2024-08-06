@@ -1,4 +1,4 @@
-namespace Infrastructure.RabbitMQ;
+namespace OpenTel.RabbitMQ;
 
 public interface IEventHandler<T>
 {

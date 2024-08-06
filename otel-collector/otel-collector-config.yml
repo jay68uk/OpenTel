@@ -7,6 +7,7 @@ receivers:
   otlp:
     protocols:
       http:  
+      grpc:
 
 processors:
   memory_limiter:
@@ -18,8 +19,8 @@ processors:
     
   attributes:
     actions:
-      - key: weatherRegion
-        value: uk
+      - key: book.environment
+        value: "development - set in the otel-collector-config.yml" 
         action: insert
 
 exporters:
@@ -36,6 +37,9 @@ exporters:
       insecure: true
 
 service:
+#  telemetry: // use this setting to get the collector to produce logs for debugging collector issues
+#    logs:
+#      level: debug
   pipelines:
     traces:
       receivers:

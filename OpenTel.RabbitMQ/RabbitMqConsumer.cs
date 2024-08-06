@@ -5,7 +5,7 @@ using OpenTelemetry;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Infrastructure.RabbitMQ;
+namespace OpenTel.RabbitMQ;
 
 public class RabbitMqConsumer<T>
 {
@@ -55,8 +55,8 @@ public class RabbitMqConsumer<T>
             var message = Encoding.UTF8.GetString(body);
             var data = JsonSerializer.Deserialize<T>(message);
 
-            activity?.SetTag("message", message); // DEMO ONLY
-            activity?.SetTag("client.id", Baggage.Current.GetBaggage("client.id"));
+            activity?.SetTag("message", message); // Only do this for dev test
+            activity?.SetTag("book.id", Baggage.Current.GetBaggage("book.id"));
             
             await _handler.HandleAsync(data!);
         };

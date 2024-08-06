@@ -5,7 +5,7 @@ using OpenTelemetry;
 using OpenTelemetry.Context.Propagation;
 using RabbitMQ.Client;
 
-namespace Infrastructure.RabbitMQ;
+namespace OpenTel.RabbitMQ;
 
 public class RabbitMqPublisher
 {
@@ -31,10 +31,12 @@ public class RabbitMqPublisher
         
         const string operation = "publish";
         var eventType = @event!.GetType().Name;
+        
         // Start an activity with a name following the semantic convention of the OpenTelemetry messaging specification.
         // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/messaging/messaging-spans.md
         var activityName = $"{eventType} {operation}";
         using var activity = RabbitMqDiagnostics.ActivitySource.StartActivity(activityName, ActivityKind.Producer);
+        activity?.SetTag("book.id", Baggage.GetBaggage("book.id"));
         
         ActivityContext contextToInject = default;
 

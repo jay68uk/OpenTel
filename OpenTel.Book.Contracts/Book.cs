@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OpenTel.Api;
+namespace OpenTel.Book.Contracts;
 
 public class Book
 {
