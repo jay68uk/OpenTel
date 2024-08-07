@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTel.RabbitMQ", "OpenTel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTel.Book.Contracts", "OpenTel.Book.Contracts\OpenTel.Book.Contracts.csproj", "{4EBBB7F2-0989-4713-910C-A18803E38032}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTel.Consumer", "OpenTel.Consumer\OpenTel.Consumer.csproj", "{17641C9A-BF1B-45C2-B0DD-E57C89ADB1D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,5 +34,9 @@ Global
 		{4EBBB7F2-0989-4713-910C-A18803E38032}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EBBB7F2-0989-4713-910C-A18803E38032}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EBBB7F2-0989-4713-910C-A18803E38032}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17641C9A-BF1B-45C2-B0DD-E57C89ADB1D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17641C9A-BF1B-45C2-B0DD-E57C89ADB1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17641C9A-BF1B-45C2-B0DD-E57C89ADB1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17641C9A-BF1B-45C2-B0DD-E57C89ADB1D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
