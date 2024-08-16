@@ -5,34 +5,56 @@ using OpenTel.Api;
 using OpenTel.Api.Diagnostics;
 using OpenTel.Api.Extensions;
 using OpenTel.Book.Contracts;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+var startupLogger = Log.Logger = new LoggerConfiguration()
+  .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+  .Enrich.FromLogContext()
+  .WriteTo.OpenTelemetry() //defaults to http://localhost:4317 and GRPC protocol
+  .WriteTo.Console()
+  .CreateBootstrapLogger();
 
-builder.Logging.AddConsole();
-builder.Services.AddFastEndpoints();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<BooksDbContext>(options =>
-  options.UseNpgsql(builder.Configuration.GetConnectionString("BooksDb")));
-
-builder.AddOpenTelemetry();
-
-builder.AddRabbitMq();
-
-var app = builder.Build();
-
-EnsureDbCreated(app);
-
-if (app.Environment.IsDevelopment())
+try
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
-}
+  var builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
-app.UseFastEndpoints();
-app.Run();
+  builder.Host.UseSerilog((_, configureLogger) => 
+    configureLogger.ReadFrom.Configuration(builder.Configuration));
+  
+  builder.Logging.AddConsole();
+  builder.Services.AddFastEndpoints();
+  builder.Services.AddEndpointsApiExplorer();
+  builder.Services.AddSwaggerGen();
+
+  builder.Services.AddDbContext<BooksDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("BooksDb")));
+
+  builder.AddOpenTelemetry();
+
+  builder.AddRabbitMq();
+
+  var app = builder.Build();
+
+  EnsureDbCreated(app);
+
+  if (app.Environment.IsDevelopment())
+  {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+  }
+
+  app.UseHttpsRedirection();
+  app.UseFastEndpoints();
+  app.Run();
+}
+catch (Exception e)
+{
+  Log.Fatal(e, "Error registering or starting services!");
+}
+finally
+{
+  await Log.CloseAndFlushAsync();
+}
 
 static void EnsureDbCreated(WebApplication app)
 {
